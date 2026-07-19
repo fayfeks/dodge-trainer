@@ -63,3 +63,37 @@ func test_game_scene_boots() -> void:
 	check(g.player is Player, "game has a player")
 	check(g.player.position == Vector2(640, 360), "player starts centered")
 	g.queue_free()
+
+func test_spawner_interval_ramps_to_floor() -> void:
+	var s := Spawner.new(Config.DIFFICULTIES.normal)
+	check(s.current_interval() == 1.0, "starts at spawn_interval")
+	s.elapsed = 20.0
+	check(abs(s.current_interval() - 0.76) < 0.0001, "ramped by 0.012/s")
+	s.elapsed = 10000.0
+	check(s.current_interval() == 0.48, "clamped at min interval")
+
+func test_spawner_emits_orders_from_outside_arena() -> void:
+	var s := Spawner.new(Config.DIFFICULTIES.easy)
+	s.rng.seed = 42
+	var orders := s.tick(3.0, Vector2(640, 360))
+	check(orders.size() >= 2, "several orders after 3s of easy")
+	for o in orders:
+		var inside: bool = o.origin.x > Config.ARENA.margin \
+			and o.origin.x < Config.ARENA.width - Config.ARENA.margin \
+			and o.origin.y > Config.ARENA.margin \
+			and o.origin.y < Config.ARENA.height - Config.ARENA.margin
+		check(not inside, "origin outside the arena")
+		check(abs(o.dir.length() - 1.0) < 0.001, "dir normalized")
+
+func test_bolt_flight_and_hit() -> void:
+	var b := Bolt.new()
+	add_child(b)
+	b.setup(Vector2(0, 360), Vector2.RIGHT, 400.0)
+	b.tick(1.0)
+	check(b.position == Vector2(400, 360), "bolt moved 400px in 1s")
+	check(b.hits(Vector2(410, 360)), "hit inside combined radii")
+	check(not b.hits(Vector2(500, 360)), "no hit far away")
+	check(not b.is_off_arena(), "still on arena")
+	b.position = Vector2(1500, 360)
+	check(b.is_off_arena(), "off arena when far past the edge")
+	b.queue_free()
