@@ -55,3 +55,11 @@ func test_player_target_clamped_to_arena() -> void:
 	check(p.target.x == a.width - a.margin - r, "x clamped")
 	check(p.target.y == a.margin + r, "y clamped")
 	p.queue_free()
+
+func test_game_scene_boots() -> void:
+	var g = preload("res://scenes/game.tscn").instantiate()
+	add_child(g)
+	g._process(0.016)
+	check(g.player is Player, "game has a player")
+	check(g.player.position == Vector2(640, 360), "player starts centered")
+	g.queue_free()
