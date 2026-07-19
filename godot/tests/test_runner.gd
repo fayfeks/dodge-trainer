@@ -159,3 +159,38 @@ func test_ads_and_iap_apis_exist() -> void:
 	Ads.show_rewarded("shield", func() -> void: granted[0] = true)
 	check(granted[0], "stub grants reward immediately")
 	check(typeof(Iap.is_ad_free()) == TYPE_BOOL, "is_ad_free returns bool")
+
+func test_shield_absorbs_one_hit() -> void:
+	var g = preload("res://scenes/game.tscn").instantiate()
+	add_child(g)
+	g.shield = true
+	check(g._check_hit(true), "shielded hit consumes the projectile")
+	check(not g.over, "shield prevented death")
+	check(not g.shield, "shield broke")
+	check(g.invuln_left > 0.0, "post-shield invulnerability granted")
+	g.invuln_left = 0.0
+	check(g._check_hit(true), "second hit is lethal")
+	check(g.over, "dead without shield")
+	g.queue_free()
+
+func test_revive_resumes_run_once() -> void:
+	var g = preload("res://scenes/game.tscn").instantiate()
+	add_child(g)
+	g.elapsed = 12.5
+	g._die()
+	g._revive()
+	check(not g.over, "revive resumes play")
+	check(g.revive_used, "revive marked used")
+	check(g.death_overlay == null, "overlay removed")
+	check(g.invuln_left == Config.REWARDS.revive_invuln_sec, "revive invulnerability")
+	check(g.elapsed == 12.5, "score/time preserved")
+	check(g.bolts.is_empty() and g.beams.is_empty(), "field cleared on revive")
+	g.queue_free()
+
+func test_shield_pending_consumed_by_game() -> void:
+	Session.shield_pending = true
+	var g = preload("res://scenes/game.tscn").instantiate()
+	add_child(g)
+	check(g.shield, "pending shield armed the run")
+	check(not Session.shield_pending, "pending flag consumed")
+	g.queue_free()

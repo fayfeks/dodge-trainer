@@ -9,6 +9,7 @@ var elapsed := 0.0
 var over := false
 var shield := false        # armed rewarded shield: absorbs one hit
 var invuln_left := 0.0     # seconds of post-revive/post-shield invulnerability
+var revive_used := false
 var hud_time: Label
 var hud_dodged: Label
 var death_overlay: Control = null
@@ -19,6 +20,8 @@ func _ready() -> void:
 	player.position = Vector2(a.width / 2.0, a.height / 2.0)
 	add_child(player)
 	spawner = Spawner.new(Config.DIFFICULTIES[Session.difficulty_key])
+	shield = Session.shield_pending
+	Session.shield_pending = false
 	_build_hud()
 
 func _build_hud() -> void:
@@ -121,6 +124,10 @@ func _die() -> void:
 		get_tree().reload_current_scene())
 	UiKit.make_button(death_overlay, Vector2(cx, cy + 110.0), "MENU", func() -> void:
 		get_tree().change_scene_to_file("res://scenes/menu.tscn"), Vector2(200, 52), 22)
+	if not revive_used and Ads.rewarded_available():
+		UiKit.make_button(death_overlay, Vector2(cx, cy + 190.0), "REVIVE (AD)", func() -> void:
+			Ads.show_rewarded("revive", _revive), Vector2(280, 52), 22)
+	Ads.on_player_death()
 
 func _draw() -> void:
 	var a := Config.ARENA
@@ -152,3 +159,17 @@ func _draw() -> void:
 		draw_rect(Rect2(x + inset, y + inset, w - inset * 2.0, h - inset * 2.0), vc, false, 18.0)
 
 	draw_rect(Rect2(x, y, w, h), a.border_color, false, a.border_width)
+
+# Rewarded-ad revive: resume the same run in place, once per run.
+func _revive() -> void:
+	revive_used = true
+	over = false
+	invuln_left = Config.REWARDS.revive_invuln_sec
+	for b in bolts:
+		b.queue_free()
+	bolts.clear()
+	for bm in beams:
+		bm.queue_free()
+	beams.clear()
+	death_overlay.queue_free()
+	death_overlay = null
