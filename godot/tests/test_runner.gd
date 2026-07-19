@@ -134,3 +134,28 @@ func test_death_shows_overlay() -> void:
 	check(g.over, "game over flag set")
 	check(g.death_overlay != null, "death overlay created")
 	g.queue_free()
+
+func test_adgate_grace_and_every_third_death() -> void:
+	var gate := AdGate.new(1000.0, 3, 300.0)
+	# Deaths inside the 300s grace: counted, never shown.
+	check(not gate.on_death(1010.0, false), "death 1 in grace")
+	check(not gate.on_death(1020.0, false), "death 2 in grace")
+	check(not gate.on_death(1030.0, false), "death 3 in grace: still no ad")
+	# First death after grace: counter is already >= 3, so it fires and resets.
+	check(gate.on_death(1400.0, false), "first post-grace death fires")
+	check(gate.deaths == 0, "counter reset after showing")
+	check(not gate.on_death(1410.0, false), "1/3")
+	check(not gate.on_death(1420.0, false), "2/3")
+	check(gate.on_death(1430.0, false), "3/3 fires")
+
+func test_adgate_ad_free_never_fires() -> void:
+	var gate := AdGate.new(0.0, 3, 0.0)
+	for i in 9:
+		check(not gate.on_death(1000.0 + i, true), "ad-free death %d" % i)
+
+func test_ads_and_iap_apis_exist() -> void:
+	check(Ads.rewarded_available(), "stub rewarded always available")
+	var granted := [false]
+	Ads.show_rewarded("shield", func() -> void: granted[0] = true)
+	check(granted[0], "stub grants reward immediately")
+	check(typeof(Iap.is_ad_free()) == TYPE_BOOL, "is_ad_free returns bool")
