@@ -6,7 +6,6 @@ export class Player {
     this.x = x;
     this.y = y;
     this.target = null; // {x, y} or null when standing still
-    this.blinkCooldownLeft = 0; // ms remaining before blink is ready again
 
     const p = CONFIG.player;
 
@@ -37,40 +36,7 @@ export class Player {
     };
   }
 
-  // Teleport `blink.distance` px toward (tx, ty), clamped to the arena.
-  // Returns true if it fired, false if still on cooldown.
-  blink(tx, ty) {
-    if (this.blinkCooldownLeft > 0) return false;
-
-    const a = CONFIG.arena;
-    const r = CONFIG.player.radius;
-    const angle = Phaser.Math.Angle.Between(this.x, this.y, tx, ty);
-
-    // Flash toward the cursor, but no farther than the cursor itself.
-    const dist = Math.min(
-      CONFIG.blink.distance,
-      Phaser.Math.Distance.Between(this.x, this.y, tx, ty)
-    );
-
-    this.x = Phaser.Math.Clamp(
-      this.x + Math.cos(angle) * dist,
-      a.margin + r, a.width - a.margin - r
-    );
-    this.y = Phaser.Math.Clamp(
-      this.y + Math.sin(angle) * dist,
-      a.margin + r, a.height - a.margin - r
-    );
-
-    // Keep the current move order so we walk on toward it after the blink.
-    this.blinkCooldownLeft = CONFIG.blink.cooldown;
-    return true;
-  }
-
   update(delta) {
-    if (this.blinkCooldownLeft > 0) {
-      this.blinkCooldownLeft = Math.max(0, this.blinkCooldownLeft - delta);
-    }
-
     if (this.target) {
       const p = CONFIG.player;
       const dist = Phaser.Math.Distance.Between(this.x, this.y, this.target.x, this.target.y);

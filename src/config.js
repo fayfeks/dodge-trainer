@@ -40,12 +40,6 @@ export const CONFIG = {
     shadowOffsetY: 10,
   },
 
-  // Blink/flash: press F or D to teleport toward the mouse, on a cooldown.
-  blink: {
-    distance: 200,         // px teleported toward the cursor
-    cooldown: 20000,       // ms before it can be used again
-  },
-
   // Right-click move confirmation ping (LoL-style green marker)
   moveMarker: {
     color: 0x35d07f,

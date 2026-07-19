@@ -97,15 +97,6 @@ class GameScene extends Phaser.Scene {
       }
     });
 
-    // Blink toward the cursor on F or D.
-    const tryBlink = () => {
-      if (this.over) return;
-      const p = this.input.activePointer;
-      this.player.blink(p.worldX, p.worldY);
-    };
-    this.input.keyboard.on('keydown-F', tryBlink);
-    this.input.keyboard.on('keydown-D', tryBlink);
-
     // Stop in place on S until a new move order is given.
     this.input.keyboard.on('keydown-S', () => {
       if (this.over) return;
@@ -176,7 +167,7 @@ class GameScene extends Phaser.Scene {
     this.elapsed += delta / 1000;
     this.player.update(delta);
     this.spawner.update(delta);
-    this.hud.update(this.elapsed, this.spawner.dodged, this.player.blinkCooldownLeft);
+    this.hud.update(this.elapsed, this.spawner.dodged);
 
     if (this.spawner.checkHit()) {
       this.gameOver();

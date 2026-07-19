@@ -37,25 +37,10 @@ export class HUD {
     };
     this.timeText = scene.add.text(CONFIG.arena.margin + 8, CONFIG.arena.margin + 8, '', this.style);
     this.dodgeText = scene.add.text(CONFIG.arena.margin + 8, CONFIG.arena.margin + 40, '', this.style);
-
-    // Blink cooldown, bottom-left corner.
-    this.blinkText = scene.add.text(
-      CONFIG.arena.margin + 8,
-      CONFIG.arena.height - CONFIG.arena.margin - 34,
-      '', this.style
-    );
   }
 
-  update(seconds, dodged, blinkCooldownLeft) {
+  update(seconds, dodged) {
     this.timeText.setText(`Time: ${seconds.toFixed(1)}s`);
     this.dodgeText.setText(`Dodged: ${dodged}`);
-
-    if (blinkCooldownLeft > 0) {
-      this.blinkText.setText(`Flash: ${(blinkCooldownLeft / 1000).toFixed(1)}s`);
-      this.blinkText.setColor('#8aa0be');
-    } else {
-      this.blinkText.setText('Flash: READY');
-      this.blinkText.setColor('#5fe0a0');
-    }
   }
 }
