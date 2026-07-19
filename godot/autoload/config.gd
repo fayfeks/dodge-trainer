@@ -30,7 +30,9 @@ const MENU := {
 	button_border_color = Color("3a557f"), button_text_color = Color("e8f2ff"),
 }
 
-const BOLT := { radius = 15.0, color = Color("ff5a4f"), glow_color = Color("ffb3ad") }
+const BOLT := { radius = 15.0, color = Color("ff5a4f"), glow_color = Color("ffb3ad"),
+	off_arena_slack = 80.0,         # px past the arena edge before bolt counts as dodged
+}
 
 const BEAM := {
 	telegraph_width = 7.5, telegraph_color = Color("e01414"), telegraph_alpha = 0.85,

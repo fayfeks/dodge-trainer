@@ -2,8 +2,6 @@ class_name Bolt
 extends Node2D
 # Travelling ball skillshot: no telegraph, straight line, kills on contact.
 
-const OFF_ARENA_SLACK := 80.0  # must fully clear the arena to count as dodged
-
 var velocity := Vector2.ZERO
 
 func setup(origin: Vector2, dir: Vector2, speed: float) -> void:
@@ -16,8 +14,9 @@ func tick(delta: float) -> void:
 
 func is_off_arena() -> bool:
 	var a := Config.ARENA
-	return position.x < -OFF_ARENA_SLACK or position.x > a.width + OFF_ARENA_SLACK \
-		or position.y < -OFF_ARENA_SLACK or position.y > a.height + OFF_ARENA_SLACK
+	var m: float = Config.BOLT.off_arena_slack
+	return position.x < -m or position.x > a.width + m \
+		or position.y < -m or position.y > a.height + m
 
 func hits(player_pos: Vector2) -> bool:
 	return position.distance_to(player_pos) < Config.BOLT.radius + Config.PLAYER.radius
