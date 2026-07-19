@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="Dodge Trainer"
-run/main_scene="res://scenes/game.tscn"
+run/main_scene="res://scenes/menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Config="*res://autoload/config.gd"
+Session="*res://autoload/session.gd"
 
 [display]
 

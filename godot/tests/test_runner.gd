@@ -115,3 +115,22 @@ func test_beam_lifecycle_and_damage_window() -> void:
 	bm.tick(0.4)   # age 1.55 > 1.5
 	check(bm.is_done(), "gone after telegraph + active duration")
 	bm.queue_free()
+
+func test_session_defaults() -> void:
+	check(Session.difficulty_key == "normal", "default difficulty")
+	check(Session.shield_pending == false, "no shield pending")
+
+func test_menu_and_difficulty_scenes_boot() -> void:
+	for path in ["res://scenes/menu.tscn", "res://scenes/difficulty.tscn"]:
+		var s = load(path).instantiate()
+		add_child(s)
+		s.queue_free()
+	check(true, "menu scenes instantiate without crashing")
+
+func test_death_shows_overlay() -> void:
+	var g = preload("res://scenes/game.tscn").instantiate()
+	add_child(g)
+	g._die()
+	check(g.over, "game over flag set")
+	check(g.death_overlay != null, "death overlay created")
+	g.queue_free()

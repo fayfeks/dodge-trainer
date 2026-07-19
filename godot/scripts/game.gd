@@ -11,13 +11,14 @@ var shield := false        # armed rewarded shield: absorbs one hit
 var invuln_left := 0.0     # seconds of post-revive/post-shield invulnerability
 var hud_time: Label
 var hud_dodged: Label
+var death_overlay: Control = null
 
 func _ready() -> void:
 	var a := Config.ARENA
 	player = preload("res://scenes/player.tscn").instantiate()
 	player.position = Vector2(a.width / 2.0, a.height / 2.0)
 	add_child(player)
-	spawner = Spawner.new(Config.DIFFICULTIES.normal)
+	spawner = Spawner.new(Config.DIFFICULTIES[Session.difficulty_key])
 	_build_hud()
 
 func _build_hud() -> void:
@@ -104,7 +105,22 @@ func _check_hit(hit: bool) -> bool:
 
 func _die() -> void:
 	over = true
-	# Death overlay + monetization hooks arrive in later tasks.
+	death_overlay = Control.new()
+	death_overlay.size = Vector2(Config.ARENA.width, Config.ARENA.height)
+	add_child(death_overlay)
+	var dim := ColorRect.new()
+	dim.color = Color(Config.MENU.bg_color, 0.92)
+	dim.size = death_overlay.size
+	death_overlay.add_child(dim)
+	var cx: float = Config.ARENA.width / 2.0
+	var cy: float = Config.ARENA.height / 2.0
+	UiKit.make_label(death_overlay, Vector2(cx, cy - 150.0), "YOU GOT HIT", 56, Color("ff7a70"))
+	UiKit.make_label(death_overlay, Vector2(cx, cy - 60.0),
+		"Survived %.1fs  •  Dodged %d" % [elapsed, spawner.dodged], 28, Config.MENU.text_color)
+	UiKit.make_button(death_overlay, Vector2(cx, cy + 30.0), "RETRY", func() -> void:
+		get_tree().reload_current_scene())
+	UiKit.make_button(death_overlay, Vector2(cx, cy + 110.0), "MENU", func() -> void:
+		get_tree().change_scene_to_file("res://scenes/menu.tscn"), Vector2(200, 52), 22)
 
 func _draw() -> void:
 	var a := Config.ARENA
