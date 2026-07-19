@@ -60,7 +60,11 @@ func _spawn(order: Dictionary) -> void:
 		b.setup(order.origin, order.dir, spawner.diff.projectile_speed)
 		add_child(b)
 		bolts.append(b)
-	# "beam" orders are handled in the beam task
+	else:
+		var bm := Beam.new()
+		bm.setup(order.origin, order.dir)
+		add_child(bm)
+		beams.append(bm)
 
 func _tick_projectiles(delta: float) -> void:
 	for b in bolts.duplicate():
@@ -74,6 +78,17 @@ func _tick_projectiles(delta: float) -> void:
 			spawner.dodged += 1
 			bolts.erase(b)
 			b.queue_free()
+	for bm in beams.duplicate():
+		bm.tick(delta)
+		if _check_hit(bm.hits(player.position)):
+			bm.did_hit = true
+			if over:
+				return
+		if bm.is_done():
+			if not bm.did_hit:
+				spawner.dodged += 1
+			beams.erase(bm)
+			bm.queue_free()
 
 # Resolves a potential hit. Returns true when the projectile was consumed
 # (absorbed by the shield or lethal).

@@ -97,3 +97,21 @@ func test_bolt_flight_and_hit() -> void:
 	b.position = Vector2(1500, 360)
 	check(b.is_off_arena(), "off arena when far past the edge")
 	b.queue_free()
+
+func test_beam_lifecycle_and_damage_window() -> void:
+	var bm = Beam.new()
+	add_child(bm)
+	bm.setup(Vector2(0, 360), Vector2.RIGHT)
+	bm.tick(0.5)
+	check(not bm.can_damage(), "telegraph phase can't damage")
+	check(not bm.hits(Vector2(200, 360)), "no hit during telegraph")
+	bm.tick(0.55)  # age 1.05: fired, inside 0.08s damage window
+	check(bm.can_damage(), "damage window open right after firing")
+	check(bm.hits(Vector2(200, 360)), "on-axis player is hit")
+	check(not bm.hits(Vector2(200, 460)), "player 100px off-axis is safe")
+	bm.tick(0.1)   # age 1.15: window closed, beam still fading
+	check(not bm.can_damage(), "damage window closed")
+	check(not bm.is_done(), "still fading")
+	bm.tick(0.4)   # age 1.55 > 1.5
+	check(bm.is_done(), "gone after telegraph + active duration")
+	bm.queue_free()
