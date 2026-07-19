@@ -33,3 +33,17 @@ No build tools, no npm. Open `index.html` with a static server (VS Code **Live S
 ## Workflow
 
 Built incrementally in phases; **do not add features the user didn't ask for.** Phase 1 (movement) is done. Skillshots (line first, then circle AoE, then homing missile), spawner ramping, and score/death UI are planned but not yet implemented — stop and get approval before starting the next phase.
+
+## Godot mobile port (godot/)
+
+The mobile rebuild lives in `godot/` (Godot 4.7, GDScript). The web version in
+`src/` stays untouched. Spec: `docs/superpowers/specs/2026-07-19-mobile-godot-port-design.md`.
+
+- All tunables live in `godot/autoload/config.gd` (`Config` autoload) — never
+  hardcode a tunable elsewhere.
+- Monetization is isolated in the `Ads` / `Iap` autoloads (phase-1 stubs).
+  Game scenes must never reference ad SDKs directly.
+- Run tests:
+  `& "C:\Program Files (x86)\Steam\steamapps\common\Godot Engine\godot.windows.opt.tools.64.exe" --headless --path godot res://tests/test_runner.tscn`
+  (expect `ALL TESTS PASSED`).
+- Run the game: same binary with `--path godot`, or from the Godot editor.
