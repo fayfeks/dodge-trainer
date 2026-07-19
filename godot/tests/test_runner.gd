@@ -25,3 +25,33 @@ func test_config_values() -> void:
 	check(Config.SPAWNER.beam_chance == 0.1, "beam chance")
 	check(Config.ADS.deaths_per_interstitial == 3, "deaths per interstitial")
 	check(Config.ADS.launch_grace_sec == 300.0, "launch grace")
+
+func _make_player(): # -> Player: (workaround: dynamic return type to avoid parse-time Player lookup)
+	var p = preload("res://scenes/player.tscn").instantiate()
+	add_child(p)
+	p.position = Vector2(640, 360)
+	return p
+
+func test_player_moves_at_constant_speed() -> void:
+	var p: Node = _make_player() # (workaround: use Node type since Player unavailable at parse time)
+	p.move_to(Vector2(940, 360))
+	p.tick(0.5)
+	check(abs(p.position.x - 790.0) < 0.01, "moved 150px in 0.5s, got x=%f" % p.position.x)
+	p.queue_free()
+
+func test_player_snaps_and_stops_at_target() -> void:
+	var p: Node = _make_player() # (workaround: use Node type)
+	p.move_to(Vector2(650, 360))
+	p.tick(1.0)
+	check(p.position == Vector2(650, 360), "snapped to target")
+	check(p.target == null, "target cleared on arrival")
+	p.queue_free()
+
+func test_player_target_clamped_to_arena() -> void:
+	var p: Node = _make_player() # (workaround: use Node type)
+	p.move_to(Vector2(5000, -5000))
+	var a := Config.ARENA
+	var r: float = Config.PLAYER.radius
+	check(p.target.x == a.width - a.margin - r, "x clamped")
+	check(p.target.y == a.margin + r, "y clamped")
+	p.queue_free()
