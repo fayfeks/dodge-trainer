@@ -1,0 +1,48 @@
+# ---- Godot 4: içe aktarma önbelleği ----
+# Godot bu klasörü projeyi her açtığında kendisi üretir. Yüzlerce MB olabilir.
+.godot/
+
+# ---- Godot 3: içe aktarma önbelleği ----
+.import/
+
+# ---- Özel Android derleme şablonu ----
+/android/
+
+# ---- Dışa aktarma ayarları ----
+# Android keystore şifresi içerebildiği için Godot'un resmi önerisi bunu
+# depoya koymamak. Export ayarlarını da yedeklemek istersen bu iki satırı sil.
+export.cfg
+export_presets.cfg
+
+# ---- CSV'den otomatik üretilen çeviriler ----
+*.translation
+
+# ---- C# / .NET ----
+.mono/
+data_*/
+mono_crash.*.json
+*.csproj
+*.sln
+obj/
+bin/
+
+# ---- Dışa aktarılmış oyun çıktıları ----
+build/
+builds/
+export/
+exports/
+*.pck
+*.exe
+*.apk
+*.aab
+*.x86_64
+
+# ---- Editör / IDE ----
+.vscode/
+.idea/
+*.swp
+
+# ---- İşletim sistemi çöpleri ----
+.DS_Store
+Thumbs.db
+desktop.ini
