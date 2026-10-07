@@ -17,6 +17,7 @@ export const CONFIG = {
     landscape: { label: '16:9', width: 1280, height: 720 },
     portrait:  { label: '9:16', width: 720,  height: 1280 },
     square:    { label: '1:1',  width: 960,  height: 960 },
+    classic:   { label: '4:3',  width: 1120, height: 840 },
     tall:      { label: '3:4',  width: 840,  height: 1120 },
   },
   defaultFormat: 'landscape',
