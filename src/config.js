@@ -40,12 +40,15 @@ export const CONFIG = {
     shadowOffsetY: 10,
   },
 
-  // Right-click move confirmation ping (LoL-style green marker)
+  // Right-click move confirmation: center dot + ring that ripples outward
   moveMarker: {
-    color: 0x35d07f,
-    radius: 16,
-    squash: 0.45,          // same ground-plane squash as shadows
-    duration: 350,         // ms until it fades out
+    color: 0x8fd3ff,
+    dotRadius: 4,          // center dot, shrinks to nothing
+    ringStartRadius: 4,    // ring grows from this...
+    ringEndRadius: 18,     // ...to this
+    ringWidth: 2,
+    squash: 0.5,           // ground-plane squash (height = width * squash)
+    duration: 400,         // ms until it fades out
   },
 
   // --- Menus (main menu + difficulty select) ---

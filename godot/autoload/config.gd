@@ -21,7 +21,12 @@ const PLAYER := {
 	shadow_squash = 0.45, shadow_alpha = 0.35, shadow_offset_y = 10.0,
 }
 
-const MOVE_MARKER := { color = Color("35d07f"), radius = 16.0, squash = 0.45, duration = 0.35 }
+# Tap confirmation: center dot + ring that ripples outward.
+const MOVE_MARKER := {
+	color = Color("8fd3ff"), dot_radius = 4.0,
+	ring_start_radius = 4.0, ring_end_radius = 18.0, ring_width = 2.0,
+	squash = 0.5, duration = 0.4,
+}
 
 const MENU := {
 	bg_color = Color("05070c"), title_color = Color("8fd3ff"),

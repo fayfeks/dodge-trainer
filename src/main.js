@@ -148,16 +148,26 @@ class GameScene extends Phaser.Scene {
 
   showMoveMarker(x, y) {
     const m = CONFIG.moveMarker;
-    const marker = this.add.ellipse(x, y, m.radius * 2, m.radius * 2 * m.squash);
-    marker.setStrokeStyle(2, m.color);
+    const g = this.add.graphics();
 
-    this.tweens.add({
-      targets: marker,
-      scaleX: 0.3,
-      scaleY: 0.3,
-      alpha: 0,
+    // Redraw each frame so the ring keeps a constant line width while it grows.
+    this.tweens.addCounter({
+      from: 0,
+      to: 1,
       duration: m.duration,
-      onComplete: () => marker.destroy(),
+      ease: 'Cubic.easeOut',
+      onUpdate: (tween) => {
+        const t = tween.getValue();
+        const alpha = 1 - t;
+        const r = m.ringStartRadius + (m.ringEndRadius - m.ringStartRadius) * t;
+        const d = m.dotRadius * (1 - t);
+        g.clear();
+        g.fillStyle(m.color, alpha);
+        g.fillEllipse(x, y, d * 2, d * 2 * m.squash);
+        g.lineStyle(m.ringWidth, m.color, alpha);
+        g.strokeEllipse(x, y, r * 2, r * 2 * m.squash);
+      },
+      onComplete: () => g.destroy(),
     });
   }
 
