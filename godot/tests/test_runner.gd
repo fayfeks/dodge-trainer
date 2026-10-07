@@ -19,7 +19,7 @@ func check(cond: bool, msg: String) -> void:
 
 func test_config_values() -> void:
 	check(Config.ARENA.width == 1280.0, "arena width")
-	check(Config.ARENA.margin == 30.0, "arena margin")
+	check(Config.ARENA.margin == 0.0, "arena margin")
 	check(Config.PLAYER.move_speed == 300.0, "player speed")
 	check(Config.DIFFICULTIES.hard.projectile_speed == 500.0, "hard bolt speed")
 	check(Config.SPAWNER.beam_chance == 0.1, "beam chance")

@@ -142,8 +142,10 @@ class GameScene extends Phaser.Scene {
       g.fillRect(x, y, w, h);
     }
 
+    // Inset by half the stroke so the full border stays visible at margin 0.
+    const hb = a.borderWidth / 2;
     g.lineStyle(a.borderWidth, a.borderColor, 1);
-    g.strokeRect(x, y, w, h);
+    g.strokeRect(x + hb, y + hb, w - hb * 2, h - hb * 2);
   }
 
   showMoveMarker(x, y) {

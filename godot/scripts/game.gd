@@ -158,7 +158,9 @@ func _draw() -> void:
 		vc.a = (bg.vignette_alpha / steps) * (steps - i)
 		draw_rect(Rect2(x + inset, y + inset, w - inset * 2.0, h - inset * 2.0), vc, false, 18.0)
 
-	draw_rect(Rect2(x, y, w, h), a.border_color, false, a.border_width)
+	# Inset by half the stroke so the full border stays visible at margin 0.
+	var hb: float = a.border_width * 0.5
+	draw_rect(Rect2(x + hb, y + hb, w - hb * 2.0, h - hb * 2.0), a.border_color, false, a.border_width)
 
 # Rewarded-ad revive: resume the same run in place, once per run.
 func _revive() -> void:

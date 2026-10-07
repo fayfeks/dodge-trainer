@@ -4,7 +4,7 @@ extends Node
 
 const ARENA := {
 	width = 1280.0, height = 720.0,
-	margin = 30.0,                      # gap between arena border and canvas edge
+	margin = 0.0,                       # gap between arena border and canvas edge
 	border_color = Color("2a3a52"), border_width = 3.0,
 }
 

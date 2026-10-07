@@ -5,7 +5,7 @@ export const CONFIG = {
   arena: {
     width: 1280,
     height: 720,
-    margin: 30,            // gap between arena border and canvas edge (px)
+    margin: 0,             // gap between arena border and canvas edge (px)
     bgColor: 0x0e1420,
     borderColor: 0x2a3a52,
     borderWidth: 3,
