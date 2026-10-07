@@ -7,8 +7,10 @@ export function makeButton(scene, x, y, label, onClick, opts = {}) {
   const w = opts.width ?? 260;
   const h = opts.height ?? 64;
 
-  const bg = scene.add.rectangle(0, 0, w, h, m.buttonColor);
-  bg.setStrokeStyle(2, 0x3a557f);
+  // `active` marks the selected option in a group (e.g. screen format).
+  const baseColor = opts.active ? m.buttonHoverColor : m.buttonColor;
+  const bg = scene.add.rectangle(0, 0, w, h, baseColor);
+  bg.setStrokeStyle(2, opts.active ? m.buttonActiveStroke : 0x3a557f);
 
   const text = scene.add.text(0, 0, label, {
     fontFamily: 'system-ui, sans-serif',
@@ -21,7 +23,7 @@ export function makeButton(scene, x, y, label, onClick, opts = {}) {
   container.setInteractive({ useHandCursor: true });
 
   container.on('pointerover', () => bg.setFillStyle(m.buttonHoverColor));
-  container.on('pointerout', () => bg.setFillStyle(m.buttonColor));
+  container.on('pointerout', () => bg.setFillStyle(baseColor));
   container.on('pointerup', onClick);
 
   return container;

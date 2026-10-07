@@ -3,6 +3,34 @@ import { Player } from './player.js';
 import { Spawner } from './spawner.js';
 import { HUD, makeButton } from './ui.js';
 
+// --- Screen format -----------------------------------------------------------
+// The chosen format resizes CONFIG.arena (read live by every module) and is
+// remembered per browser.
+const FORMAT_STORAGE_KEY = 'dodgeTrainer.format';
+
+function loadFormat() {
+  try {
+    const key = localStorage.getItem(FORMAT_STORAGE_KEY);
+    if (key && CONFIG.formats[key]) return key;
+  } catch { /* storage unavailable: fall back to default */ }
+  return CONFIG.defaultFormat;
+}
+
+function saveFormat(key) {
+  try { localStorage.setItem(FORMAT_STORAGE_KEY, key); } catch { /* ignore */ }
+}
+
+let currentFormat = loadFormat();
+
+function applyFormat(key) {
+  const f = CONFIG.formats[key];
+  currentFormat = key;
+  CONFIG.arena.width = f.width;
+  CONFIG.arena.height = f.height;
+}
+
+applyFormat(currentFormat);
+
 // --- Main menu -------------------------------------------------------------
 class MenuScene extends Phaser.Scene {
   constructor() {
@@ -30,6 +58,27 @@ class MenuScene extends Phaser.Scene {
 
     makeButton(this, a.width / 2, a.height / 2 + 30, 'PLAY', () => {
       this.scene.start('difficulty');
+    });
+
+    this.add.text(a.width / 2, a.height / 2 + 120, 'FORMAT', {
+      fontFamily: 'system-ui, sans-serif',
+      fontSize: '20px',
+      color: m.subtitleColor,
+    }).setOrigin(0.5);
+
+    const keys = Object.keys(CONFIG.formats);
+    const bw = 120;
+    const gap = 16;
+    const startX = a.width / 2 - ((keys.length - 1) * (bw + gap)) / 2;
+    keys.forEach((key, i) => {
+      const f = CONFIG.formats[key];
+      makeButton(this, startX + i * (bw + gap), a.height / 2 + 170, f.label, () => {
+        if (key === currentFormat) return;
+        applyFormat(key);
+        saveFormat(key);
+        this.scale.setGameSize(f.width, f.height);
+        this.scene.restart();
+      }, { width: bw, height: 48, fontSize: 20, active: key === currentFormat });
     });
   }
 }

@@ -1,7 +1,8 @@
 // All gameplay constants live here. Tune freely.
 
 export const CONFIG = {
-  // Design resolution (16:9 landscape). Phaser letterboxes this into any window.
+  // Design resolution. Phaser letterboxes this into any window. width/height
+  // are overwritten at runtime by the format picked on the main menu.
   arena: {
     width: 1280,
     height: 720,
@@ -10,6 +11,15 @@ export const CONFIG = {
     borderColor: 0x2a3a52,
     borderWidth: 3,
   },
+
+  // Screen formats selectable on the main menu (canvas size in px).
+  formats: {
+    landscape: { label: '16:9', width: 1280, height: 720 },
+    portrait:  { label: '9:16', width: 720,  height: 1280 },
+    square:    { label: '1:1',  width: 960,  height: 960 },
+    tall:      { label: '3:4',  width: 840,  height: 1120 },
+  },
+  defaultFormat: 'landscape',
 
   // Procedural ground-plane background (no image assets needed).
   background: {
@@ -59,6 +69,7 @@ export const CONFIG = {
     textColor: '#cfe4ff',
     buttonColor: 0x1b2740,
     buttonHoverColor: 0x2a3f66,
+    buttonActiveStroke: 0x8fd3ff, // outline of the selected format button
     buttonTextColor: '#e8f2ff',
   },
 

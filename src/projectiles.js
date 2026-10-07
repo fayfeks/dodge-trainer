@@ -1,7 +1,7 @@
 import { CONFIG } from './config.js';
 
 // Length long enough to cross the arena from any edge point along any angle.
-const REACH = CONFIG.arena.width + CONFIG.arena.height;
+const reach = () => CONFIG.arena.width + CONFIG.arena.height;
 
 // A bolt skillshot: no telegraph. Fires immediately from its spawn point and
 // travels in a straight line until it leaves the arena. Hits the player if the
@@ -70,7 +70,7 @@ export class BeamSkillshot {
     const b = CONFIG.beam;
 
     // Thin warning line, pinned at the spawn point and rotated along the axis.
-    this.telegraph = scene.add.rectangle(x, y, REACH, b.telegraphWidth, b.telegraphColor, b.telegraphAlpha);
+    this.telegraph = scene.add.rectangle(x, y, reach(), b.telegraphWidth, b.telegraphColor, b.telegraphAlpha);
     this.telegraph.setOrigin(0, 0.5);
     this.telegraph.setRotation(angle);
 
@@ -99,7 +99,7 @@ export class BeamSkillshot {
     // Fat white beam on the same axis, 3x the telegraph thickness, centred so
     // the earlier thin line sits exactly in its middle third.
     this.beam = this.scene.add.rectangle(
-      this.x, this.y, REACH, b.telegraphWidth * b.widthMultiplier, b.beamColor, b.beamAlpha
+      this.x, this.y, reach(), b.telegraphWidth * b.widthMultiplier, b.beamColor, b.beamAlpha
     );
     this.beam.setOrigin(0, 0.5);
     this.beam.setRotation(this.angle);
